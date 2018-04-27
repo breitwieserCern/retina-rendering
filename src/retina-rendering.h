@@ -2,6 +2,7 @@
 #define RETINA_RENDERING_H_
 
 #include "biodynamo.h"
+#include "csv.h"
 
 namespace bdm {
 
@@ -33,9 +34,32 @@ inline int Simulate(int argc, const char** argv) {
   Param::export_visualization_ = true;
   Param::visualize_sim_objects_["RetinaCell"] = {"color_"};
 
-  // TODO read csv file and create retina cells
-  RetinaCell cell({0, 0, 0}, 10, 0);
-  ResourceManager<>::Get()->push_back(cell);
+  {
+    io::CSVReader<3> in("type0pos.csv");
+    double x, y, z;
+    while (in.read_row(x, y, z)) {
+      RetinaCell cell({x, y, z}, 10, 0);
+      ResourceManager<>::Get()->push_back(cell);
+    }
+  }
+
+  {
+    io::CSVReader<3> in("type1pos.csv");
+    double x, y, z;
+    while (in.read_row(x, y, z)) {
+      RetinaCell cell({x, y, z}, 10, 1);
+      ResourceManager<>::Get()->push_back(cell);
+    }
+  }
+
+  {
+    io::CSVReader<3> in("type2pos.csv");
+    double x, y, z;
+    while (in.read_row(x, y, z)) {
+      RetinaCell cell({x, y, z}, 10, 2);
+      ResourceManager<>::Get()->push_back(cell);
+    }
+  }
 
   // Run simulation for one timestep
   Scheduler<> scheduler;
